@@ -18,17 +18,15 @@ namespace Tbot.Services
         private string Url { get; set; }
         private RestClient Client { get; set; }
 
-        public OgamedService(Credentials credentials, string url)
+        /**
+        * Tralla 20/2/21
+        * 
+        * add ability to set custom host 
+        */
+        public OgamedService(Credentials credentials, string host = "127.0.0.1", int port = 8080, string proxy = "", string proxyType = "")
         {
-            ExecuteOgamedExecutable(credentials);
-            this.Url = url;
-            this.Client = new RestClient(this.Url);
-        }
-
-        public OgamedService(Credentials credentials, int port = 8080)
-        {
-            ExecuteOgamedExecutable(credentials, port);
-            this.Url = "http://127.0.0.1:" + port;
+            ExecuteOgamedExecutable(credentials, host, port, proxy, proxyType);
+            this.Url = "http://" + host + ":" + port;
             this.Client = new RestClient(this.Url);
         }
 
@@ -41,16 +39,16 @@ namespace Tbot.Services
                 {
                     if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                     {
-                        obj = Properties.Resources.ResourceManager.GetObject("ogamed-win64");
+                        obj = Properties.Resources.ResourceManager.GetObject("ogamed_win64");
                     }
                     else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
                     {
-                        //obj = Properties.Resources.ResourceManager.GetObject("ogamed-linux64");
+                        //obj = Properties.Resources.ResourceManager.GetObject("ogamed_linux64");
                         throw new Exception("This platform is not supported yet.");
                     }
                     else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
                     {
-                        //obj = Properties.Resources.ResourceManager.GetObject("ogamed-osx64");
+                        //obj = Properties.Resources.ResourceManager.GetObject("ogamed_osx64");
                         throw new Exception("This platform is not supported yet.");
                     }
                     else
@@ -62,12 +60,12 @@ namespace Tbot.Services
                 {
                     if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                     {
-                        //obj = Properties.Resources.ResourceManager.GetObject("ogamed-win32");
+                        //obj = Properties.Resources.ResourceManager.GetObject("ogamed_win32");
                         throw new Exception("This platform is not supported yet.");
                     }
                     else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
                     {
-                        //obj = Properties.Resources.ResourceManager.GetObject("ogamed-linux32");
+                        //obj = Properties.Resources.ResourceManager.GetObject("ogamed_linux32");
                         throw new Exception("This platform is not supported yet.");
                     }
                     else
@@ -79,7 +77,7 @@ namespace Tbot.Services
                 {
                     if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
                     {
-                        //obj = Properties.Resources.ResourceManager.GetObject("ogamed-linuxarm");
+                        //obj = Properties.Resources.ResourceManager.GetObject("ogamed_arm32");
                         throw new Exception("This platform is not supported yet.");
                     }
                     else
@@ -91,17 +89,17 @@ namespace Tbot.Services
                 {
                     if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                     {
-                        //obj = Properties.Resources.ResourceManager.GetObject("ogamed-winarm64");
+                        //obj = Properties.Resources.ResourceManager.GetObject("ogamed_winarm64");
                         throw new Exception("This platform is not supported yet.");
                     }
                     else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
                     {
-                        //obj = Properties.Resources.ResourceManager.GetObject("ogamed-linuxarm64");
+                        //obj = Properties.Resources.ResourceManager.GetObject("ogamed_arm64");
                         throw new Exception("This platform is not supported yet.");
                     }
                     else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
                     {
-                        //obj = Properties.Resources.ResourceManager.GetObject("ogamed-osxarm64");
+                        //obj = Properties.Resources.ResourceManager.GetObject("ogamed_osxarm64");
                         throw new Exception("This platform is not supported yet.");
                     }
                     else
@@ -130,15 +128,10 @@ namespace Tbot.Services
             fsDst.Write(bytes, 0, bytes.Length);
         }
 
-        internal void ExecuteOgamedExecutable(Credentials credentials)
-        {
-            ExecuteOgamedExecutable(credentials, 8080);
-        }
-
-        internal void ExecuteOgamedExecutable(Credentials credentials, int port)
+        internal void ExecuteOgamedExecutable(Credentials credentials, string host = "localhost", int port = 8080, string proxy = "", string proxyType = "")
         {
             CreateOgamedExecutable();
-            string args = "--universe=" + credentials.Universe + " --username=" + credentials.Username + " --password=" + credentials.Password + " --language=" + credentials.Language + " --auto-login=false --port=" + port;
+            string args = "--universe=" + credentials.Universe + " --username=" + credentials.Username + " --password=" + credentials.Password + " --language=" + credentials.Language + " --auto-login=false --port=" + port + " --api-new-hostname=http://" + host + ":" + port + " --cookies-filename=cookies.txt" + " --proxy=\"" + proxy + "\"" + " --proxy-type=\"" + proxyType + "\"";
             Process.Start("ogamed.exe", args);
         }
 
@@ -208,7 +201,7 @@ namespace Tbot.Services
             {
                 throw new Exception("An error has occurred: Status: " + result.Status + " - Message: " + result.Message);
             }
-            else return JsonConvert.DeserializeObject<Server>(JsonConvert.SerializeObject(result.Result));
+            else return JsonConvert.DeserializeObject<Server>(JsonConvert.SerializeObject(result.Result), new JsonSerializerSettings { DateTimeZoneHandling = DateTimeZoneHandling.Local });
         }
 
         public ServerData GetServerData()
@@ -223,7 +216,7 @@ namespace Tbot.Services
             {
                 throw new Exception("An error has occurred: Status: " + result.Status + " - Message: " + result.Message);
             }
-            else return JsonConvert.DeserializeObject<ServerData>(JsonConvert.SerializeObject(result.Result));
+            else return JsonConvert.DeserializeObject<ServerData>(JsonConvert.SerializeObject(result.Result), new JsonSerializerSettings { DateTimeZoneHandling = DateTimeZoneHandling.Local });
         }
 
         public string GetServerUrl()
@@ -358,7 +351,7 @@ namespace Tbot.Services
             {
                 throw new Exception("An error has occurred: Status: " + result.Status + " - Message: " + result.Message);
             }
-            else return JsonConvert.DeserializeObject<UserInfo>(JsonConvert.SerializeObject(result.Result));
+            else return JsonConvert.DeserializeObject<UserInfo>(JsonConvert.SerializeObject(result.Result), new JsonSerializerSettings { DateTimeZoneHandling = DateTimeZoneHandling.Local });
         }
 
         public Classes GetUserClass()
@@ -388,7 +381,7 @@ namespace Tbot.Services
             {
                 throw new Exception("An error has occurred: Status: " + result.Status + " - Message: " + result.Message);
             }
-            else return JsonConvert.DeserializeObject<List<Planet>>(JsonConvert.SerializeObject(result.Result));
+            else return JsonConvert.DeserializeObject<List<Planet>>(JsonConvert.SerializeObject(result.Result), new JsonSerializerSettings { DateTimeZoneHandling = DateTimeZoneHandling.Local });
         }
 
         public Planet GetPlanet(Planet planet)
@@ -403,7 +396,7 @@ namespace Tbot.Services
             {
                 throw new Exception("An error has occurred: Status: " + result.Status + " - Message: " + result.Message);
             }
-            else return JsonConvert.DeserializeObject<Planet>(JsonConvert.SerializeObject(result.Result));
+            else return JsonConvert.DeserializeObject<Planet>(JsonConvert.SerializeObject(result.Result), new JsonSerializerSettings { DateTimeZoneHandling = DateTimeZoneHandling.Local });
         }
 
         public List<Moon> GetMoons()
@@ -418,7 +411,7 @@ namespace Tbot.Services
             {
                 throw new Exception("An error has occurred: Status: " + result.Status + " - Message: " + result.Message);
             }
-            else return JsonConvert.DeserializeObject<List<Moon>>(JsonConvert.SerializeObject(result.Result));
+            else return JsonConvert.DeserializeObject<List<Moon>>(JsonConvert.SerializeObject(result.Result), new JsonSerializerSettings { DateTimeZoneHandling = DateTimeZoneHandling.Local });
         }
 
         public Moon GetMoon(Moon moon)
@@ -433,7 +426,7 @@ namespace Tbot.Services
             {
                 throw new Exception("An error has occurred: Status: " + result.Status + " - Message: " + result.Message);
             }
-            else return JsonConvert.DeserializeObject<Moon>(JsonConvert.SerializeObject(result.Result));
+            else return JsonConvert.DeserializeObject<Moon>(JsonConvert.SerializeObject(result.Result), new JsonSerializerSettings { DateTimeZoneHandling = DateTimeZoneHandling.Local });
         }
 
         public List<Celestial> GetCelestials()
@@ -467,7 +460,7 @@ namespace Tbot.Services
             {
                 throw new Exception("An error has occurred: Status: " + result.Status + " - Message: " + result.Message);
             }
-            else return JsonConvert.DeserializeObject<Model.Resources>(JsonConvert.SerializeObject(result.Result));
+            else return JsonConvert.DeserializeObject<Model.Resources>(JsonConvert.SerializeObject(result.Result), new JsonSerializerSettings { DateTimeZoneHandling = DateTimeZoneHandling.Local });
         }
 
         public Buildings GetBuildings(Celestial celestial)
@@ -482,7 +475,7 @@ namespace Tbot.Services
             {
                 throw new Exception("An error has occurred: Status: " + result.Status + " - Message: " + result.Message);
             }
-            else return JsonConvert.DeserializeObject<Model.Buildings>(JsonConvert.SerializeObject(result.Result));
+            else return JsonConvert.DeserializeObject<Model.Buildings>(JsonConvert.SerializeObject(result.Result), new JsonSerializerSettings { DateTimeZoneHandling = DateTimeZoneHandling.Local });
         }
 
         public Facilities GetFacilities(Celestial celestial)
@@ -497,7 +490,7 @@ namespace Tbot.Services
             {
                 throw new Exception("An error has occurred: Status: " + result.Status + " - Message: " + result.Message);
             }
-            else return JsonConvert.DeserializeObject<Facilities>(JsonConvert.SerializeObject(result.Result));
+            else return JsonConvert.DeserializeObject<Facilities>(JsonConvert.SerializeObject(result.Result), new JsonSerializerSettings { DateTimeZoneHandling = DateTimeZoneHandling.Local });
         }
 
         public Defences GetDefences(Celestial celestial)
@@ -512,7 +505,7 @@ namespace Tbot.Services
             {
                 throw new Exception("An error has occurred: Status: " + result.Status + " - Message: " + result.Message);
             }
-            else return JsonConvert.DeserializeObject<Defences>(JsonConvert.SerializeObject(result.Result));
+            else return JsonConvert.DeserializeObject<Defences>(JsonConvert.SerializeObject(result.Result), new JsonSerializerSettings { DateTimeZoneHandling = DateTimeZoneHandling.Local });
         }
 
         public Ships GetShips(Celestial celestial)
@@ -527,7 +520,7 @@ namespace Tbot.Services
             {
                 throw new Exception("An error has occurred: Status: " + result.Status + " - Message: " + result.Message);
             }
-            else return JsonConvert.DeserializeObject<Ships>(JsonConvert.SerializeObject(result.Result));
+            else return JsonConvert.DeserializeObject<Ships>(JsonConvert.SerializeObject(result.Result), new JsonSerializerSettings { DateTimeZoneHandling = DateTimeZoneHandling.Local });
         }
 
         public bool IsUnderAttack()
@@ -572,7 +565,7 @@ namespace Tbot.Services
             {
                 throw new Exception("An error has occurred: Status: " + result.Status + " - Message: " + result.Message);
             }
-            else return JsonConvert.DeserializeObject<List<AttackerFleet>>(JsonConvert.SerializeObject(result.Result));
+            else return JsonConvert.DeserializeObject<List<AttackerFleet>>(JsonConvert.SerializeObject(result.Result), new JsonSerializerSettings { DateTimeZoneHandling = DateTimeZoneHandling.Local });
         }
 
         public List<Fleet> GetFleets()
@@ -587,7 +580,7 @@ namespace Tbot.Services
             {
                 throw new Exception("An error has occurred: Status: " + result.Status + " - Message: " + result.Message);
             }
-            else return JsonConvert.DeserializeObject<List<Fleet>>(JsonConvert.SerializeObject(result.Result));
+            else return JsonConvert.DeserializeObject<List<Fleet>>(JsonConvert.SerializeObject(result.Result), new JsonSerializerSettings { DateTimeZoneHandling = DateTimeZoneHandling.Local });
         }
 
         public Slots GetSlots()
@@ -602,7 +595,7 @@ namespace Tbot.Services
             {
                 throw new Exception("An error has occurred: Status: " + result.Status + " - Message: " + result.Message);
             }
-            else return JsonConvert.DeserializeObject<Slots>(JsonConvert.SerializeObject(result.Result));
+            else return JsonConvert.DeserializeObject<Slots>(JsonConvert.SerializeObject(result.Result), new JsonSerializerSettings { DateTimeZoneHandling = DateTimeZoneHandling.Local });
         }
 
         public Researches GetResearches()
@@ -617,7 +610,7 @@ namespace Tbot.Services
             {
                 throw new Exception("An error has occurred: Status: " + result.Status + " - Message: " + result.Message);
             }
-            else return JsonConvert.DeserializeObject<Researches>(JsonConvert.SerializeObject(result.Result));
+            else return JsonConvert.DeserializeObject<Researches>(JsonConvert.SerializeObject(result.Result), new JsonSerializerSettings { DateTimeZoneHandling = DateTimeZoneHandling.Local });
         }
 
         public List<Production> GetProductions(Celestial celestial)
@@ -632,7 +625,7 @@ namespace Tbot.Services
             {
                 throw new Exception("An error has occurred: Status: " + result.Status + " - Message: " + result.Message);
             }
-            else return JsonConvert.DeserializeObject<List<Production>>(JsonConvert.SerializeObject(result.Result));
+            else return JsonConvert.DeserializeObject<List<Production>>(JsonConvert.SerializeObject(result.Result), new JsonSerializerSettings { DateTimeZoneHandling = DateTimeZoneHandling.Local });
         }
 
         public ResourceSettings GetResourceSettings(Planet planet)
@@ -647,7 +640,7 @@ namespace Tbot.Services
             {
                 throw new Exception("An error has occurred: Status: " + result.Status + " - Message: " + result.Message);
             }
-            else return JsonConvert.DeserializeObject<ResourceSettings>(JsonConvert.SerializeObject(result.Result));
+            else return JsonConvert.DeserializeObject<ResourceSettings>(JsonConvert.SerializeObject(result.Result), new JsonSerializerSettings { DateTimeZoneHandling = DateTimeZoneHandling.Local });
         }
 
         public Model.Resources GetResourceProduction(Planet planet)
@@ -662,7 +655,7 @@ namespace Tbot.Services
             {
                 throw new Exception("An error has occurred: Status: " + result.Status + " - Message: " + result.Message);
             }
-            else return JsonConvert.DeserializeObject<Model.Resources>(JsonConvert.SerializeObject(result.Result));
+            else return JsonConvert.DeserializeObject<Model.Resources>(JsonConvert.SerializeObject(result.Result), new JsonSerializerSettings { DateTimeZoneHandling = DateTimeZoneHandling.Local });
         }
 
         public Constructions GetConstructions(Celestial celestial)
@@ -677,7 +670,7 @@ namespace Tbot.Services
             {
                 throw new Exception("An error has occurred: Status: " + result.Status + " - Message: " + result.Message);
             }
-            else return JsonConvert.DeserializeObject<Constructions>(JsonConvert.SerializeObject(result.Result));
+            else return JsonConvert.DeserializeObject<Constructions>(JsonConvert.SerializeObject(result.Result), new JsonSerializerSettings { DateTimeZoneHandling = DateTimeZoneHandling.Local });
         }
 
         public bool CancelConstruction(Celestial celestial)
@@ -723,12 +716,11 @@ namespace Tbot.Services
             request.AddParameter(new Parameter("position", destination.Position, ParameterType.GetOrPost));
             request.AddParameter(new Parameter("type", (int)destination.Type, ParameterType.GetOrPost));
 
-            Buildables buildable;
             foreach (PropertyInfo prop in ships.GetType().GetProperties())
             {
-                int qty = (int)prop.GetValue(ships, null);
+                long qty = (long)prop.GetValue(ships, null);
                 if (qty == 0) continue;
-                if (Enum.TryParse<Buildables>(prop.Name, out buildable))
+                if (Enum.TryParse<Buildables>(prop.Name, out Buildables buildable))
                 {
                     request.AddParameter(new Parameter("ships", (int)buildable + "," + prop.GetValue(ships, null), ParameterType.GetOrPost));
                 }
@@ -747,7 +739,7 @@ namespace Tbot.Services
             {
                 throw new Exception("An error has occurred: Status: " + result.Status + " - Message: " + result.Message);
             }
-            else return JsonConvert.DeserializeObject<Fleet>(JsonConvert.SerializeObject(result.Result));
+            else return JsonConvert.DeserializeObject<Fleet>(JsonConvert.SerializeObject(result.Result), new JsonSerializerSettings { DateTimeZoneHandling = DateTimeZoneHandling.Local });
         }
 
         public bool CancelFleet(Fleet fleet)
@@ -777,7 +769,7 @@ namespace Tbot.Services
             {
                 throw new Exception("An error has occurred: Status: " + result.Status + " - Message: " + result.Message);
             }
-            else return JsonConvert.DeserializeObject<GalaxyInfo>(JsonConvert.SerializeObject(result.Result));
+            else return JsonConvert.DeserializeObject<GalaxyInfo>(JsonConvert.SerializeObject(result.Result), new JsonSerializerSettings { DateTimeZoneHandling = DateTimeZoneHandling.Local });
         }
 
         public GalaxyInfo GetGalaxyInfo(int galaxy, int system)
@@ -831,7 +823,7 @@ namespace Tbot.Services
             else return true;
         }
 
-        public bool BuildMilitary(Celestial celestial, Buildables buildable, int quantity)
+        public bool BuildMilitary(Celestial celestial, Buildables buildable, long quantity)
         {
             var request = new RestRequest
             {
@@ -846,7 +838,7 @@ namespace Tbot.Services
             else return true;
         }
 
-        public bool BuildShips(Celestial celestial, Buildables buildable, int quantity)
+        public bool BuildShips(Celestial celestial, Buildables buildable, long quantity)
         {
             var request = new RestRequest
             {
@@ -861,7 +853,7 @@ namespace Tbot.Services
             else return true;
         }
 
-        public bool BuildDefences(Celestial celestial, Buildables buildable, int quantity)
+        public bool BuildDefences(Celestial celestial, Buildables buildable, long quantity)
         {
             var request = new RestRequest
             {
@@ -876,7 +868,7 @@ namespace Tbot.Services
             else return true;
         }
 
-        public Model.Resources GetPrice(Buildables buildable, int levelOrQuantity)
+        public Model.Resources GetPrice(Buildables buildable, long levelOrQuantity)
         {
             var request = new RestRequest
             {
@@ -888,7 +880,7 @@ namespace Tbot.Services
             {
                 throw new Exception("An error has occurred: Status: " + result.Status + " - Message: " + result.Message);
             }
-            else return JsonConvert.DeserializeObject<Model.Resources>(JsonConvert.SerializeObject(result.Result));
+            else return JsonConvert.DeserializeObject<Model.Resources>(JsonConvert.SerializeObject(result.Result), new JsonSerializerSettings { DateTimeZoneHandling = DateTimeZoneHandling.Local });
         }
 
         public bool SendMessage(int playerID, string message)

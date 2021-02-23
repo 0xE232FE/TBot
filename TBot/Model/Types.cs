@@ -4,7 +4,7 @@ using System.Reflection;
 using System.Text;
 
 namespace Tbot.Model
-{ 
+{
 
     public class Credentials
     {
@@ -24,6 +24,13 @@ namespace Tbot.Model
 
     public class Coordinate
     {
+        public Coordinate(int galaxy = 1, int system = 1, int position = 1, Celestials type = Celestials.Planet)
+        {
+            Galaxy = galaxy;
+            System = system;
+            Position = position;
+            Type = type;
+        }
         public int Galaxy { get; set; }
         public int System { get; set; }
         public int Position { get; set; }
@@ -55,7 +62,9 @@ namespace Tbot.Model
     {
         public int Min { get; set; }
         public int Max { get; set; }
-        public float Average { get
+        public float Average
+        {
+            get
             {
                 return (float)(Min + Max) / 2;
             }
@@ -108,11 +117,19 @@ namespace Tbot.Model
             catch
             {
                 return false;
-            }                
+            }
+        }
+
+        public bool HasCoords(Coordinate coords)
+        {
+            if (coords.Galaxy == Coordinate.Galaxy && coords.System == Coordinate.System && coords.Position == Coordinate.Position && coords.Type == Coordinate.Type)
+                return true;
+            else
+                return false;
         }
     }
 
-    public class Moon : Celestial {}
+    public class Moon : Celestial { }
 
     public class Planet : Celestial
     {
@@ -203,10 +220,10 @@ namespace Tbot.Model
     {
         public int PlayerID { get; set; }
         public string PlayerName { get; set; }
-        public int Points { get; set; }
-        public int Rank { get; set; }
-        public int Total { get; set; }
-        public int HonourPoints { get; set; }
+        public long Points { get; set; }
+        public long Rank { get; set; }
+        public long Total { get; set; }
+        public long HonourPoints { get; set; }
         public Classes Class { get; set; }
     }
 
@@ -217,7 +234,8 @@ namespace Tbot.Model
         public long Deuterium { get; set; }
         public long Energy { get; set; }
         public long Darkmatter { get; set; }
-        public long ConvertedDeuterium {
+        public long ConvertedDeuterium
+        {
             get
             {
                 return (long)Math.Round(2.5 * Metal, 0) + (long)Math.Round(1.5 * Crystal, 0) + Deuterium;
@@ -280,37 +298,37 @@ namespace Tbot.Model
 
     public class Defences
     {
-        public int RocketLauncher { get; set; }
-        public int LightLaser { get; set; }
-        public int HeavyLaser { get; set; }
-        public int GaussCannon { get; set; }
-        public int IonCannon { get; set; }
-        public int PlasmaTurret { get; set; }
-        public int SmallShieldDome { get; set; }
-        public int LargeShieldDome { get; set; }
-        public int AntiBallisticMissiles { get; set; }
-        public int InterplanetaryMissiles { get; set; }
+        public long RocketLauncher { get; set; }
+        public long LightLaser { get; set; }
+        public long HeavyLaser { get; set; }
+        public long GaussCannon { get; set; }
+        public long IonCannon { get; set; }
+        public long PlasmaTurret { get; set; }
+        public long SmallShieldDome { get; set; }
+        public long LargeShieldDome { get; set; }
+        public long AntiBallisticMissiles { get; set; }
+        public long InterplanetaryMissiles { get; set; }
     }
 
     public class Ships
     {
-        public int LightFighter { get; set; }
-        public int HeavyFighter { get; set; }
-        public int Cruiser { get; set; }
-        public int Battleship { get; set; }
-        public int Battlecruiser { get; set; }
-        public int Bomber { get; set; }
-        public int Destroyer { get; set; }
-        public int Deathstar { get; set; }
-        public int SmallCargo { get; set; }
-        public int LargeCargo { get; set; }
-        public int ColonyShip { get; set; }
-        public int Recycler { get; set; }
-        public int EspionageProbe { get; set; }
-        public int SolarSatellite { get; set; }
-        public int Crawler { get; set; }
-        public int Reaper { get; set; }
-        public int Pathfinder { get; set; }
+        public long LightFighter { get; set; }
+        public long HeavyFighter { get; set; }
+        public long Cruiser { get; set; }
+        public long Battleship { get; set; }
+        public long Battlecruiser { get; set; }
+        public long Bomber { get; set; }
+        public long Destroyer { get; set; }
+        public long Deathstar { get; set; }
+        public long SmallCargo { get; set; }
+        public long LargeCargo { get; set; }
+        public long ColonyShip { get; set; }
+        public long Recycler { get; set; }
+        public long EspionageProbe { get; set; }
+        public long SolarSatellite { get; set; }
+        public long Crawler { get; set; }
+        public long Reaper { get; set; }
+        public long Pathfinder { get; set; }
         public bool IsEmpty()
         {
             if
@@ -341,13 +359,13 @@ namespace Tbot.Model
                 return false;
             }
         }
-        public Ships Add(Buildables buildable, int quantity)
+        public Ships Add(Buildables buildable, long quantity)
         {
             foreach (PropertyInfo prop in this.GetType().GetProperties())
             {
                 if (prop.Name == buildable.ToString())
                 {
-                    prop.SetValue(this, (int)prop.GetValue(this) + quantity);
+                    prop.SetValue(this, (long)prop.GetValue(this) + quantity);
                 }
             }
             return this;
@@ -359,7 +377,7 @@ namespace Tbot.Model
             {
                 if (prop.Name == buildable.ToString())
                 {
-                    int val = (int)prop.GetValue(this);
+                    long val = (long)prop.GetValue(this);
                     if (val >= quantity)
                         prop.SetValue(this, val);
                     else
@@ -369,13 +387,13 @@ namespace Tbot.Model
             return this;
         }
 
-        public int GetAmount(Buildables buildable)
+        public long GetAmount(Buildables buildable)
         {
             foreach (PropertyInfo prop in this.GetType().GetProperties())
             {
                 if (prop.Name == buildable.ToString())
                 {
-                    return (int)prop.GetValue(this);
+                    return (long)prop.GetValue(this);
                 }
             }
             return 0;
@@ -385,7 +403,8 @@ namespace Tbot.Model
         {
             string output = "";
             foreach (PropertyInfo prop in this.GetType().GetProperties())
-            {   if ((int)prop.GetValue(this) == 0)
+            {
+                if ((long)prop.GetValue(this) == 0)
                     continue;
                 output += prop.Name + ": " + prop.GetValue(this) + "; ";
             }
@@ -425,6 +444,36 @@ namespace Tbot.Model
         public int UnionID { get; set; }
         public int Missiles { get; set; }
         public Ships Ships { get; set; }
+
+        public bool IsOnlyProbes()
+        {
+            if (Ships.EspionageProbe != 0)
+            {
+                if
+                (
+                    Ships.Battlecruiser == 0 &&
+                    Ships.Battleship == 0 &&
+                    Ships.Bomber == 0 &&
+                    Ships.ColonyShip == 0 &&
+                    Ships.Cruiser == 0 &&
+                    Ships.Deathstar == 0 &&
+                    Ships.Destroyer == 0 &&
+                    Ships.HeavyFighter == 0 &&
+                    Ships.LargeCargo == 0 &&
+                    Ships.LightFighter == 0 &&
+                    Ships.Pathfinder == 0 &&
+                    Ships.Reaper == 0 &&
+                    Ships.Recycler == 0 &&
+                    Ships.SmallCargo == 0 &&
+                    Ships.SolarSatellite == 0
+                )
+                    return true;
+                else
+                    return false;
+            }
+            else
+                return false;
+        }
     }
     public class Slots
     {
@@ -432,7 +481,9 @@ namespace Tbot.Model
         public int Total { get; set; }
         public int ExpInUse { get; set; }
         public int ExpTotal { get; set; }
-        public int Free { get
+        public int Free
+        {
+            get
             {
                 return Total - InUse;
             }
@@ -482,11 +533,13 @@ namespace Tbot.Model
 
     public class Debris
     {
-        public int Metal { get; set; }
-        public int Crystal { get; set; }
-        public int RecyclersNeeded { get; set; }
-        public Resources Resources {
-            get {
+        public long Metal { get; set; }
+        public long Crystal { get; set; }
+        public long RecyclersNeeded { get; set; }
+        public Resources Resources
+        {
+            get
+            {
                 return new Resources
                 {
                     Metal = Metal,
@@ -501,9 +554,9 @@ namespace Tbot.Model
 
     public class ExpeditionDebris
     {
-        public int Metal { get; set; }
-        public int Crystal { get; set; }
-        public int PathfindersNeeded { get; set; }
+        public long Metal { get; set; }
+        public long Crystal { get; set; }
+        public long PathfindersNeeded { get; set; }
         public Resources Resources
         {
             get
@@ -549,6 +602,7 @@ namespace Tbot.Model
     {
         public Celestial Celestial { get; set; }
         public Buildables Buildable { get; set; }
+        public int Level { get; set; }
         public Resources Price { get; set; }
     }
 

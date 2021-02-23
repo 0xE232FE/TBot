@@ -6,26 +6,35 @@
     "Language": ""
   },
   "General": {
-    "UserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36",
-    "Port": "8080"
+    "UserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.36",
+    "Host": "localhost",
+    "Port": "8080",
+    "Proxy": "",
+    "ProxyType":  ""
   },
   "Defender": {
     "Active": true,
     "CheckIntervalMin": 4,
     "CheckIntervalMax": 11,
+    "IgnoreProbes": true,
     "Autofleet": {
-      "Active": true
+      "Active": true,
+      "Recall": true,
+      "TelegramMessenger": {
+        "Active": true
+      }
     },
     "SpyAttacker": {
       "Active": true,
-      "Probes": 5
+      "Probes": 1
     },
     "MessageAttacker": {
       "Active": true,
       "Messages": [
         "hey",
         "hello",
-        "Grande Puffo is in da house"
+        "Tripa tripaloski",
+        "Trallallero trallallà"
       ]
     },
     "TelegramMessenger": {
@@ -37,10 +46,36 @@
   },
   "Brain": {
     "Active": true,
+    "AutoMine": {
+      "Active": true,
+      "MaxMetalMine": 40,
+      "MaxCrystalMine": 35,
+      "MaxDeuteriumSynthetizer": 37,
+      "MaxSolarPlant": 20,
+      "MaxFusionReactor": 20,
+      "DepositHours": 6,
+      "MaxMetalStorage": 13,
+      "MaxCrystalStorage": 12,
+      "MaxDeuteriumTank": 11,
+      "MaxRoboticsFactory": 10,
+      "MaxShipyard": 12,
+      "MaxResearchLab": 12,
+      "MaxMissileSilo": 0,
+      "MaxNaniteFactory": 7,
+      "MaxLunarBase": 8,
+      "MaxLunarShipyard": 0,
+      "MaxLunarRoboticsFactory": 8,
+      "MaxSensorPhalanx": 6,
+      "MaxJumpGate": 1,
+      "CheckIntervalMin": 10,
+      "CheckIntervalMax": 20
+    },
     "AutoCargo": {
       "Active": true,
       "ExcludeMoons": true,
       "CargoType": "LargeCargo",
+      "MaxCargosToBuild": 50,
+      "MaxCargosToKeep": 50,
       "CheckIntervalMin": 60,
       "CheckIntervalMax": 240
     },
@@ -49,9 +84,9 @@
       "ExcludeMoons": true,
       "MinimumResources": 1000000,
       "Target": {
-        "Galaxy": 1,
-        "System": 95,
-        "Position": 4,
+        "Galaxy": 5,
+        "System": 63,
+        "Position": 8,
         "Type": "Moon"
       },
       "CargoType": "LargeCargo",
@@ -68,9 +103,9 @@
       "WaitForAllExpeditions": true,
       "SplitExpeditionsBetweenSystems": false,
       "Origin": {
-        "Galaxy": 1,
-        "System": 95,
-        "Position": 4,
+        "Galaxy": 5,
+        "System": 63,
+        "Position": 8,
         "Type": "Moon"
       }
     },
@@ -80,7 +115,7 @@
     }
   },
   "TelegramMessenger": {
-    "Active": true,
+    "Active": false,
     "API": "",
     "ChatId": ""
   }
