@@ -459,7 +459,9 @@ namespace TBot.Ogame.Infrastructure {
 		public async Task<bool> IsUnderAttack() {
 			return await GetAsync<bool>("/bot/is-under-attack");
 		}
-
+		public async Task<bool> IsUnderAttackByCelestial(Celestial celestial) {
+			return await GetAsync<bool>($"/bot/planets/{celestial.ID}/is-under-attack");
+		}
 		public async Task<bool> IsVacationMode() {
 			return await GetAsync<bool>("/bot/is-vacation-mode");
 		}

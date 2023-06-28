@@ -81,6 +81,7 @@ namespace TBot.Ogame.Infrastructure {
 		Task<bool> HasTechnocrat();
 		bool IsPortAvailable(string host, int port = 8080);
 		Task<bool> IsUnderAttack();
+		Task<bool> IsUnderAttackByCelestial(Celestial celestial);
 		Task<bool> IsVacationMode();
 		Task JumpGate(Celestial origin, Celestial destination, Ships ships);
 		Task<bool> SendDiscovery(Celestial origin, Coordinate coords);

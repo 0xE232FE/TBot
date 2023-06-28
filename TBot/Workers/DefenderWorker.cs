@@ -15,6 +15,7 @@ using Tbot.Includes;
 using System.Timers;
 using TBot.Ogame.Infrastructure;
 using Tbot.Common.Settings;
+using SixLabors.ImageSharp.Metadata.Profiles.Exif;
 
 namespace Tbot.Workers {
 	internal class DefenderWorker : WorkerBase {
@@ -33,11 +34,10 @@ namespace Tbot.Workers {
 
 		protected override async Task Execute() {
 			try {
+				Celestial celestial;
 				DoLog(LogLevel.Information, "Checking attacks...");
-
-				await FakeActivity();
-				_tbotInstance.UserData.fleets = await _fleetScheduler.UpdateFleets();
-				bool isUnderAttack = await _ogameService.IsUnderAttack();
+				celestial = GetCelestialToCheckFrom();
+				bool isUnderAttack = await _ogameService.IsUnderAttackByCelestial(celestial);
 				DateTime time = await _tbotOgameBridge.GetDateTime();
 				if (isUnderAttack) {
 					if ((bool) _tbotInstance.InstanceSettings.Defender.Alarm.Active)
@@ -59,7 +59,7 @@ namespace Tbot.Workers {
 				DateTime newTime = time.AddMilliseconds(interval);
 				ChangeWorkerPeriod(TimeSpan.FromMilliseconds(interval));
 				DoLog(LogLevel.Information, $"Next check at {newTime.ToString()}");
-				await _tbotOgameBridge.CheckCelestials();
+				//await _tbotOgameBridge.CheckCelestials();
 			} catch (Exception e) {
 				DoLog(LogLevel.Warning, $"An error has occurred while checking for attacks: {e.Message}");
 				DoLog(LogLevel.Warning, $"Stacktrace: {e.StackTrace}");
@@ -92,10 +92,7 @@ namespace Tbot.Workers {
 		}
 
 
-		private async Task FakeActivity() {
-			//checking if under attack by making activity on planet/moon configured in settings (otherwise make acti on latest activated planet)
-			// And make activity on one more random planet to fake real player
-
+		private Celestial GetCelestialToCheckFrom() {
 			Celestial celestial;
 			Celestial randomCelestial;
 			var randomActivity = (bool) _tbotInstance.InstanceSettings.Defender.RandomActivity;
@@ -111,17 +108,15 @@ namespace Tbot.Workers {
 
 				if (celestial.ID != 0) {
 					DoLog(LogLevel.Information, $"Check from Home ({celestial.Coordinate.Galaxy}:{celestial.Coordinate.System}:{celestial.Coordinate.Position} {celestial.Coordinate.Type})");
-					celestial = await _tbotOgameBridge.UpdatePlanet(celestial, UpdateTypes.Defences);
+				} else {
+					DoLog(LogLevel.Error, "Error while checking from Home");
 				}
 			} else {
 				randomCelestial = _tbotInstance.UserData.celestials.Shuffle().FirstOrDefault() ?? new() { ID = 0 };
-
-				if (randomCelestial.ID != 0) {
-					DoLog(LogLevel.Information, $"Check from Random Celestial");
-					randomCelestial = await _tbotOgameBridge.UpdatePlanet(randomCelestial, UpdateTypes.Defences);
-				}
+				celestial = randomCelestial;
+				DoLog(LogLevel.Information, $"Check from random Celestial ({celestial.Coordinate.Galaxy}:{celestial.Coordinate.System}:{celestial.Coordinate.Position} {celestial.Coordinate.Type})");
 			}
-			return;
+			return celestial;
 		}
 
 		private async void HandleAttack(AttackerFleet attack) {
@@ -131,7 +126,7 @@ namespace Tbot.Workers {
 				DateTime newTime = time.AddMilliseconds(interval);
 				ChangeWorkerPeriod(TimeSpan.FromMilliseconds(interval));
 				DoLog(LogLevel.Warning, "Unable to handle attack at the moment: bot is still getting account info.");
-				DoLog(LogLevel.Information,  $"Next check at {newTime.ToString()}");
+				DoLog(LogLevel.Information, $"Next check at {newTime.ToString()}");
 				return;
 			}
 
