@@ -4069,19 +4069,26 @@ namespace Tbot.Includes {
 			return (long) Math.Floor(((double) foodProduction / (double) foodConsumption) * (double) livingSpace);
 		}
 
-		public LFTechno GetNextLFTechToBuild(Celestial celestial, LFTechs MaxReasearchLevel) {
+		public LFTechno GetNextLFTechToBuild(Celestial celestial, LFTechs MaxReasearchLevel, bool waitFirstLvl = true) {
 			//TODO
 			//As planets can have any lifeform techs, its complicated to find which techs are existing on a planet if the techs are not at least level 1
 			//Therefore, for the moment, up only techs that are minimum level 1, its a way to also allows player to chose which research to up
 			foreach (LFTechno nextLFTech in Enum.GetValues<LFTechno>()) {
 				int? level = celestial.LFTechs.GetLevel(nextLFTech);
 				if (level is null) {
-						continue;
+					continue;
 				}
 
-				if (level > 0 && GetNextLevel(celestial, nextLFTech) <= MaxReasearchLevel.GetLevel(nextLFTech)) {
-					//Console.WriteLine($"-----------------------------> {nextLFTech}: {GetNextLevel(celestial, nextLFTech)} / {MaxReasearchLevel.GetLevel(nextLFTech)}");
-					return nextLFTech;
+				if (waitFirstLvl) {
+					if (level > 0 && GetNextLevel(celestial, nextLFTech) <= MaxReasearchLevel.GetLevel(nextLFTech)) {
+						//Console.WriteLine($"-----------------------------> {nextLFTech}: {GetNextLevel(celestial, nextLFTech)} / {MaxReasearchLevel.GetLevel(nextLFTech)}");
+						return nextLFTech;
+					}
+				} else {
+					if (nextLFTech != LFTechno.None && level >= 0 && GetNextLevel(celestial, nextLFTech) <= MaxReasearchLevel.GetLevel(nextLFTech)) {
+						//Console.WriteLine($"-----------------------------> {nextLFTech}: {GetNextLevel(celestial, nextLFTech)} / {MaxReasearchLevel.GetLevel(nextLFTech)}");
+						return nextLFTech;
+					}
 				}
 			}
 			return LFTechno.None;

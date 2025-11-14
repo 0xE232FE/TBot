@@ -225,6 +225,7 @@
             "Transports": {
                 "Active": true
             },
+			"WaitLvl1BeforeIncrease": false,
             "MaxResearchLevel": 15,
             "MaxTechs11": 15,
             "MaxTechs12": 13,

@@ -153,7 +153,7 @@ namespace Tbot.Workers.Brain {
 					return;
 				}
 				if (celestial is Planet) {
-					buildable = _calculationService.GetNextLFTechToBuild(celestial, maxLFTechs);//maxResearchLevel);
+					buildable = _calculationService.GetNextLFTechToBuild(celestial, maxLFTechs, (bool) _tbotInstance.InstanceSettings.Brain.LifeformAutoResearch.WaitLvl1BeforeIncrease);//maxResearchLevel);
 
 					if (buildable != LFTechno.None) {
 						level = _calculationService.GetNextLevel(celestial, buildable);
@@ -322,7 +322,7 @@ namespace Tbot.Workers.Brain {
 														celestialsToExclude)
 													);
 												
-												Celestial destination;
+												Celestial destination = new() { ID = 0 };
 												if ((bool) transportsSettings.SendToTheMoonIfPossible && _calculationService.IsThereMoonHere(allCelestials, celestial)) {
 													destination = allCelestials
 														.Unique()
@@ -369,7 +369,7 @@ namespace Tbot.Workers.Brain {
 													}
 												}
 											} else {
-												Celestial destination;
+												Celestial destination = new() { ID = 0 };
 												if ((bool) _tbotInstance.InstanceSettings.Brain.Transports.SendToTheMoonIfPossible && _calculationService.IsThereMoonHere(_tbotInstance.UserData.celestials, celestial)) {
 													destination = allCelestials
 														.Unique()
