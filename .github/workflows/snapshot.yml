@@ -2,9 +2,9 @@ name: Snapshot
 
 on:
   push:
-    branches: [ develop, newbb ]
+    branches: [ develop, newbb, 20240626_develop ]
   pull_request:
-    branches: [ develop, newbb ]
+    branches: [ develop, newbb, 20240626_develop ]
 
 jobs:
   build:
