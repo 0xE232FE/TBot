@@ -216,7 +216,7 @@ namespace Tbot.Workers {
 			if (TelegramMission != Missions.None)
 				mission = TelegramMission;
 
-			decimal forceSpeed = (decimal) _tbotInstance.InstanceSettings.Defender.Autofleet.ForceSpeed;			
+			decimal forceSpeed = (decimal) _tbotInstance.InstanceSettings.Defender.Autofleet.ForceSpeed /10;			
 			List<FleetHypotesis> fleetHypotesis = await GetFleetSaveDestination(_tbotInstance.UserData.celestials, celestial, departureTime, minDuration, mission, maxDeuterium);
 			if (fleetHypotesis.Count() > 0) {
 				foreach (FleetHypotesis fleet in fleetHypotesis.OrderBy(pf => pf.Fuel).ThenBy(pf => pf.Duration <= minDuration)) {
