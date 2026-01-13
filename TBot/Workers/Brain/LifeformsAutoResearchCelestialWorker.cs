@@ -211,7 +211,7 @@ namespace Tbot.Workers.Brain {
 										(int) _tbotInstance.InstanceSettings.AutoFarm.MaxSlots,
 										(int) _tbotInstance.UserData.fleets.Count(f => f.Mission == Missions.Attack)),
 									new RankSlotsPriority(Feature.Colonize,
-										(int) _tbotInstance.InstanceSettings.General.SlotPriorityLevel.Colonize,
+										(int) _tbotInstance.InstanceSettings.General.SlotPriorityLevel.AutoColonize,
 										(bool) _tbotInstance.InstanceSettings.AutoColonize.Active,
 										(bool) _tbotInstance.InstanceSettings.AutoColonize.IntensiveResearch.Active ?
 											(int) _tbotInstance.InstanceSettings.AutoColonize.IntensiveResearch.MaxSlots :
