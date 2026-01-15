@@ -334,15 +334,16 @@ namespace Tbot.Workers {
 
 										for (int i = 0; i < expToSendFromEachOrigin.Count(); i++) {
 											var wave = expToSendFromEachOrigin.ElementAt(i);
-											quot += (toDelay > 0 ? 1 : 0);
-											if (wave.Value.Values.First() < quot) {
+											int tempQuot = quot + (toDelay > 0 ? 1 : 0);
+											toDelay = 0;
+											if (wave.Value.Values.First() < tempQuot) {
 												result = wave.Value.Values.First();
-												if ((int) Math.Floor((float) (quot - wave.Value.Values.First()) / (float) (expToSendFromEachOrigin.Count() - (i + 1))) > 0)
-													quot += (int) Math.Floor((float) (quot - wave.Value.Values.First()) / (float) (expToSendFromEachOrigin.Count() - (i + 1)));
+												if ((int) Math.Floor((float) (tempQuot - wave.Value.Values.First()) / (float) (expToSendFromEachOrigin.Count() - (i + 1))) > 0)
+													tempQuot += (int) Math.Floor((float) (tempQuot - wave.Value.Values.First()) / (float) (expToSendFromEachOrigin.Count() - (i + 1)));
 												else
-													toDelay = quot - wave.Value.Values.First();
+													toDelay = tempQuot - wave.Value.Values.First();
 											} else {
-												result = quot;
+												result = tempQuot;
 											}
 											if (cleanExpToSendFromEachOrigin.ContainsKey(wave.Key))
 												cleanExpToSendFromEachOrigin.Remove(wave.Key);
