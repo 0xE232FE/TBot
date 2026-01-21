@@ -344,9 +344,9 @@
 				}
 			],
 			"ResourcesRankPriority": {
-				"Metal": 1,
+				"Metal": 3,
 				"Crystal": 2,
-				"Deuterium": 3
+				"Deuterium": 1
 			},
 			"TargetAssociateMoon": false,
 			"CargoType": "LargeCargo",
