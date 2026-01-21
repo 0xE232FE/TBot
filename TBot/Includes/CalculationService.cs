@@ -568,20 +568,48 @@ namespace Tbot.Includes {
 			return CalcOptimalFarmSpeed(origin.Coordinate, destination, ships, loot, ratio, maxFlightTime, researches, serverData, lfBonuses, playerClass, allyClass);
 		}
 
-		public Resources CalcMaxTransportableResources(Ships ships, Resources resources, int hyperspaceTech, ServerData serverData, LFBonuses lfBonuses = null, CharacterClass playerClass = CharacterClass.NoClass, long deutToLeave = 0, int probeCargo = 0) {
+		public Resources CalcMaxTransportableResources(Ships ships, Resources resources, int hyperspaceTech, ServerData serverData, LFBonuses lfBonuses = null, CharacterClass playerClass = CharacterClass.NoClass, long deutToLeave = 0, int probeCargo = 0, (int Metal, int Crystal, int Deut) rankRess = default) {
 			var capacity = CalcFleetCapacity(ships, serverData, hyperspaceTech, lfBonuses, playerClass, probeCargo);
+			Resources result = new();
+			if (rankRess == default) rankRess = (3, 2, 1);
 			if (resources.TotalResources <= capacity) {
 				return new Resources { Deuterium = resources.Deuterium - deutToLeave, Crystal = resources.Crystal, Metal = resources.Metal };
 			} else {
-				if (resources.Deuterium - deutToLeave > capacity) {
-					return new Resources { Deuterium = capacity };
-				} else if (capacity >= resources.Deuterium - deutToLeave && capacity < (resources.Deuterium - deutToLeave + resources.Crystal)) {
-					return new Resources { Deuterium = resources.Deuterium - deutToLeave, Crystal = (capacity - resources.Deuterium + deutToLeave) };
-				} else if (capacity >= (resources.Deuterium - deutToLeave + resources.Crystal) && capacity < resources.TotalResources) {
-					return new Resources { Deuterium = resources.Deuterium - deutToLeave, Crystal = resources.Crystal, Metal = (capacity - resources.Deuterium + deutToLeave - resources.Crystal) };
-				} else
-					return resources;
+				resources.Deuterium -= deutToLeave;
+				if (rankRess.Metal == 1) {
+					if (resources.Metal > capacity) return new Resources { Metal = capacity };
+					else result.Metal = resources.Metal;
+				} else if (rankRess.Crystal == 1) {
+					if (resources.Crystal > capacity) return new Resources { Crystal = capacity };
+					else result.Crystal = resources.Crystal;
+				} else if (rankRess.Deut == 1) {
+					if (resources.Deuterium > capacity) return new Resources { Deuterium = capacity };
+					else result.Deuterium = resources.Deuterium;
+				}
+
+				if (rankRess.Metal == 2) {
+					if (resources.Metal + result.TotalResources > capacity) return new Resources { Metal = capacity - result.TotalResources, Crystal = result.Crystal, Deuterium = result.Deuterium };
+					else result.Metal = resources.Metal;
+				} else if (rankRess.Crystal == 2) {
+					if (resources.Crystal + result.TotalResources > capacity) return new Resources { Metal = result.Metal, Crystal = capacity - result.TotalResources, Deuterium = result.Deuterium };
+					else result.Crystal = resources.Crystal;
+				} else if (rankRess.Deut == 2) {
+					if (resources.Deuterium + result.TotalResources > capacity) return new Resources { Metal = result.Metal, Crystal = result.Crystal, Deuterium = capacity - result.TotalResources };
+					else result.Deuterium = resources.Deuterium;
+				}
+
+				if (rankRess.Metal == 3) {
+					if (resources.Metal + result.TotalResources > capacity) return new Resources { Metal = capacity - result.TotalResources, Crystal = result.Crystal, Deuterium = result.Deuterium };
+					else result.Metal = resources.Metal;
+				} else if (rankRess.Crystal == 3) {
+					if (resources.Crystal + result.TotalResources > capacity) return new Resources { Metal = result.Metal, Crystal = capacity - result.TotalResources, Deuterium = result.Deuterium };
+					else result.Crystal = resources.Crystal;
+				} else if (rankRess.Deut == 3) {
+					if (resources.Deuterium + result.TotalResources > capacity) return new Resources { Metal = result.Metal, Crystal = result.Crystal, Deuterium = capacity - result.TotalResources };
+					else result.Deuterium = resources.Deuterium;
+				}
 			}
+			return result;
 		}
 
 		public long CalcShipNumberForPayload(Resources payload, Buildables buildable, int hyperspaceTech, ServerData serverData, float cargoBonus = 0, CharacterClass playerClass = CharacterClass.NoClass, int probeCapacity = 0) {

@@ -1330,7 +1330,12 @@ namespace Tbot.Workers {
 							} else {
 								ships.Add(preferredShip, tempCelestial.Ships.GetAmount(preferredShip));
 							}
-							payload = _calcService.CalcMaxTransportableResources(ships, payload, _tbotInstance.UserData.researches.HyperspaceTechnology, _tbotInstance.UserData.serverData, tempCelestial.LFBonuses, _tbotInstance.UserData.userInfo.Class, _tbotInstance.UserData.serverData.ProbeCargo);
+							var rankRess = ( Metal: ((int) _tbotInstance.InstanceSettings.Brain.AutoRepatriate.ResourcesRankPriority.Metal <= 0 || (int) _tbotInstance.InstanceSettings.Brain.AutoRepatriate.ResourcesRankPriority.Metal > 3) ? 3 : (int) _tbotInstance.InstanceSettings.Brain.AutoRepatriate.ResourcesRankPriority.Metal,
+													Crystal: ((int) _tbotInstance.InstanceSettings.Brain.AutoRepatriate.ResourcesRankPriority.Crystal <= 0 || (int) _tbotInstance.InstanceSettings.Brain.AutoRepatriate.ResourcesRankPriority.Crystal > 3) ? 2 : (int) _tbotInstance.InstanceSettings.Brain.AutoRepatriate.ResourcesRankPriority.Crystal,
+													Deut: ((int) _tbotInstance.InstanceSettings.Brain.AutoRepatriate.ResourcesRankPriority.Deuterium <= 0 || (int) _tbotInstance.InstanceSettings.Brain.AutoRepatriate.ResourcesRankPriority.Deuterium > 3) ? 1 : (int) _tbotInstance.InstanceSettings.Brain.AutoRepatriate.ResourcesRankPriority.Deuterium );
+							if (rankRess.Metal == rankRess.Crystal || rankRess.Metal == rankRess.Deut || rankRess.Crystal == rankRess.Deut)
+								rankRess = ( Metal: 3, Crystal: 2, Deut: 1 );
+							payload = _calcService.CalcMaxTransportableResources(ships, payload, _tbotInstance.UserData.researches.HyperspaceTechnology, _tbotInstance.UserData.serverData, tempCelestial.LFBonuses, _tbotInstance.UserData.userInfo.Class, 0, _tbotInstance.UserData.serverData.ProbeCargo, rankRess);
 
 							if (payload.TotalResources > 0) {
 								var fleetId = await SendFleet(tempCelestial, ships, destinationCoordinate, Missions.Transport, Speeds.HundredPercent, payload);

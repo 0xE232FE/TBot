@@ -21,7 +21,7 @@
 			"Height": 1080,
 			"Timezone": "Europe/London",
 			"Lang": "en"
-		  }
+		}
 	},
 	"General": {
 		"Host": "localhost",
@@ -343,6 +343,11 @@
 					"Type": "Moon"
 				}
 			],
+			"ResourcesRankPriority": {
+				"Metal": 1,
+				"Crystal": 2,
+				"Deuterium": 3
+			},
 			"TargetAssociateMoon": false,
 			"CargoType": "LargeCargo",
 			"RandomOrder": false,
