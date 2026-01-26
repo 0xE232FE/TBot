@@ -29,7 +29,37 @@ namespace Tbot.Includes {
 			IOgameService ogameService) {
 			_logger = logger;
 			_ogameService = ogameService;
+			
 		}
+
+		public int CalcSlotsPriority(
+    Feature feature,
+    List<RankSlotsPriority> rankSlotsPriority,
+    Slots slots,
+    List<Fleet> fleets,
+    int slotsToLeaveFree = 0)
+{
+    // Safety
+    rankSlotsPriority ??= new List<RankSlotsPriority>();
+    fleets ??= new List<Fleet>();
+
+    int totalSlots = slots?.Total ?? 0;
+    int usedSlots = fleets.Count;
+
+    int freeSlots = totalSlots - usedSlots - Math.Max(slotsToLeaveFree, 0);
+    if (freeSlots < 0) freeSlots = 0;
+
+    var current = rankSlotsPriority.FirstOrDefault(r => r.Feature == feature);
+    if (current != null && current.MaxSlots > 0)
+    {
+        int remainingForFeature = current.MaxSlots - Math.Max(current.SlotsUsed, 0);
+        if (remainingForFeature < 0) remainingForFeature = 0;
+
+        freeSlots = Math.Min(freeSlots, remainingForFeature);
+    }
+
+    return freeSlots;
+}
 
 		public int CalcShipCapacity(Buildables buildable, int hyperspaceTech, ServerData serverData, CharacterClass playerClass = CharacterClass.NoClass, int probeCargo = 0) {
 			int baseCargo;

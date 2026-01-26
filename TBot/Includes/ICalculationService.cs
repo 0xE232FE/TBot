@@ -8,6 +8,14 @@ using TBot.Ogame.Infrastructure.Models;
 
 namespace Tbot.Includes {
 	public interface ICalculationService {
+		int CalcSlotsPriority(
+    Feature feature,
+    List<RankSlotsPriority> rankSlotsPriority,
+    Slots slots,
+    List<Fleet> fleets,
+    int slotsToLeaveFree = 0
+);
+
 		bool AreThereIncomingResources(Celestial celestial, List<Fleet> fleets);
 		long CalcCrystalProduction(Buildings buildings, int position, int speedFactor, float ratio = 1, Researches researches = null, LFBonuses lfBonuses = null, CharacterClass playerClass = CharacterClass.NoClass, bool hasGeologist = false, bool hasStaff = false, int crawlers = 0, float crawlerRatio = 1);
 		long CalcCrystalProduction(int level, int position, int speedFactor, float ratio = 1, int plasma = 0, float crystalLFBonus = 0, CharacterClass playerClass = CharacterClass.NoClass, bool hasGeologist = false, bool hasStaff = false, int crawlers = 0, float crawlerRatio = 1);
