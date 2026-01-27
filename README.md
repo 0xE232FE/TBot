@@ -41,6 +41,14 @@ TBot configuration consists in two files:
   *settings.json* can be passed as a command line argument as follows:
   > TBot --settings=<settings.json path>
 - *instance_settings.json* handles the configuration of a bot instance
+### Local configuration (recommended)
+If you don't want to modify the tracked config files, you can create local overrides:
+
+- Copy `TBot/settings.json` to `TBot/settings.local.json`
+- Copy `TBot/instance_settings.json` to `TBot/instance_settings.local.json`
+- In `TBot/settings.local.json`, set `"Settings": "instance_settings.local.json"`
+
+`*.local.json` files are ignored by git.
 
 The *settings.json* should be compiled as follows:
 ```json

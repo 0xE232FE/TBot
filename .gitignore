@@ -342,3 +342,8 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+
+# Local runtime configs (ignored)
+TBot/settings.local.json
+TBot/instance_settings.local.json
+TBot/*.local.json
