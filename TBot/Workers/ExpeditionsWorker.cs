@@ -176,7 +176,7 @@ namespace Tbot.Workers {
 
 								LFBonuses lfBonuses = origins.First().LFBonuses;
 								Dictionary<Celestial, int> originExps = new();
-								int quot = (int) Math.Floor((float) expsToSend / (float) origins.Count());								
+								int quot = (int) Math.Floor((float) expsToSend / (float) origins.Count());
 								foreach (var origin in origins) {
 									originExps.Add(origin, quot);
 								}

@@ -91,7 +91,7 @@ namespace Tbot.Workers.Brain {
 							DoLog(LogLevel.Information, $"Skipping {cel.ToString()}: No Lifeform active on this planet.");
 							continue;
 						}
-						var nextLFTechToBuild = _calculationService.GetNextLFTechToBuild(cel, maxLFTechs);//maxResearchLevel);
+						var nextLFTechToBuild = _calculationService.GetNextLFTechToBuild(cel, maxLFTechs, (bool) _tbotInstance.InstanceSettings.Brain.LifeformAutoResearch.WaitLvl1BeforeIncrease);//maxResearchLevel);
 						if (nextLFTechToBuild != LFTechno.None) {
 							var level = _calculationService.GetNextLevel(cel, nextLFTechToBuild);
 							Resources nextLFTechCost = _calculationService.CalcPrice(nextLFTechToBuild, level);
