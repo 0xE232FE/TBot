@@ -84,6 +84,7 @@
 		},
 		"Autofleet": {
 			"Active": true,
+			"ForceSpeed": 0,
 			"TelegramMessenger": {
 				"Active": false
 			}

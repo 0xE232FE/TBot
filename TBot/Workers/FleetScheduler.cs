@@ -216,12 +216,13 @@ namespace Tbot.Workers {
 			if (TelegramMission != Missions.None)
 				mission = TelegramMission;
 
+			decimal forceSpeed = (decimal) _tbotInstance.InstanceSettings.Defender.Autofleet.ForceSpeed /10;			
 			List<FleetHypotesis> fleetHypotesis = await GetFleetSaveDestination(_tbotInstance.UserData.celestials, celestial, departureTime, minDuration, mission, maxDeuterium);
 			if (fleetHypotesis.Count() > 0) {
 				foreach (FleetHypotesis fleet in fleetHypotesis.OrderBy(pf => pf.Fuel).ThenBy(pf => pf.Duration <= minDuration)) {
 					_tbotInstance.log(LogLevel.Warning, LogSender.FleetScheduler, $"checking {mission} fleet to: {fleet.Destination}");
 					if (CheckFuel(fleet, celestial)) {
-						fleetId = await SendFleet(fleet.Origin, fleet.Ships, fleet.Destination, fleet.Mission, fleet.Speed, payload, _tbotInstance.UserData.userInfo.Class, true);
+						fleetId = await SendFleet(fleet.Origin, fleet.Ships, fleet.Destination, fleet.Mission, (forceSpeed > 0 ? forceSpeed : fleet.Speed), payload, _tbotInstance.UserData.userInfo.Class, true);
 
 						if (fleetId != (int) SendFleetCode.GenericError ||
 							fleetId != (int) SendFleetCode.AfterSleepTime ||
@@ -253,7 +254,7 @@ namespace Tbot.Workers {
 					foreach (FleetHypotesis fleet in fleetHypotesis.OrderBy(pf => pf.Fuel).ThenBy(pf => pf.Duration <= minDuration)) {
 						_tbotInstance.log(LogLevel.Warning, LogSender.FleetScheduler, $"checking {mission} fleet to: {fleet.Destination}");
 						if (CheckFuel(fleet, celestial)) {
-							fleetId = await SendFleet(fleet.Origin, fleet.Ships, fleet.Destination, fleet.Mission, fleet.Speed, payload, _tbotInstance.UserData.userInfo.Class, true);
+							fleetId = await SendFleet(fleet.Origin, fleet.Ships, fleet.Destination, fleet.Mission, (forceSpeed > 0 ? forceSpeed : fleet.Speed), payload, _tbotInstance.UserData.userInfo.Class, true);
 
 							if (fleetId != (int) SendFleetCode.GenericError ||
 								fleetId != (int) SendFleetCode.AfterSleepTime ||
@@ -276,7 +277,7 @@ namespace Tbot.Workers {
 					foreach (FleetHypotesis fleet in fleetHypotesis.OrderBy(pf => pf.Fuel).ThenBy(pf => pf.Duration <= minDuration)) {
 						_tbotInstance.log(LogLevel.Warning, LogSender.FleetScheduler, $"checking {mission} fleet to: {fleet.Destination}");
 						if (CheckFuel(fleet, celestial)) {
-							fleetId = await SendFleet(fleet.Origin, fleet.Ships, fleet.Destination, fleet.Mission, fleet.Speed, payload, _tbotInstance.UserData.userInfo.Class, true);
+							fleetId = await SendFleet(fleet.Origin, fleet.Ships, fleet.Destination, fleet.Mission, (forceSpeed > 0 ? forceSpeed : fleet.Speed), payload, _tbotInstance.UserData.userInfo.Class, true);
 
 							if (fleetId != (int) SendFleetCode.GenericError ||
 								fleetId != (int) SendFleetCode.AfterSleepTime ||
@@ -299,7 +300,7 @@ namespace Tbot.Workers {
 					foreach (FleetHypotesis fleet in fleetHypotesis.OrderBy(pf => pf.Fuel).ThenBy(pf => pf.Duration <= minDuration)) {
 						_tbotInstance.log(LogLevel.Warning, LogSender.FleetScheduler, $"checking {mission} fleet to: {fleet.Destination}");
 						if (CheckFuel(fleet, celestial)) {
-							fleetId = await SendFleet(fleet.Origin, fleet.Ships, fleet.Destination, fleet.Mission, fleet.Speed, payload, _tbotInstance.UserData.userInfo.Class, true);
+							fleetId = await SendFleet(fleet.Origin, fleet.Ships, fleet.Destination, fleet.Mission, (forceSpeed > 0 ? forceSpeed : fleet.Speed), payload, _tbotInstance.UserData.userInfo.Class, true);
 
 							if (fleetId != (int) SendFleetCode.GenericError ||
 								fleetId != (int) SendFleetCode.AfterSleepTime ||
@@ -322,7 +323,7 @@ namespace Tbot.Workers {
 					foreach (FleetHypotesis fleet in fleetHypotesis.OrderBy(pf => pf.Fuel).ThenBy(pf => pf.Duration <= minDuration)) {
 						_tbotInstance.log(LogLevel.Warning, LogSender.FleetScheduler, $"checking {mission} fleet to: {fleet.Destination}");
 						if (CheckFuel(fleet, celestial)) {
-							fleetId = await SendFleet(fleet.Origin, fleet.Ships, fleet.Destination, fleet.Mission, fleet.Speed, payload, _tbotInstance.UserData.userInfo.Class, true);
+							fleetId = await SendFleet(fleet.Origin, fleet.Ships, fleet.Destination, fleet.Mission, (forceSpeed > 0 ? forceSpeed : fleet.Speed), payload, _tbotInstance.UserData.userInfo.Class, true);
 
 							if (fleetId != (int) SendFleetCode.GenericError ||
 								fleetId != (int) SendFleetCode.AfterSleepTime ||
