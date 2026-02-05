@@ -147,11 +147,9 @@ namespace TBot.Ogame.Infrastructure.Models {
 		public Ships Remove(Buildables buildable, int quantity) {
 			foreach (PropertyInfo prop in this.GetType().GetProperties()) {
 				if (prop.Name == buildable.ToString()) {
-					long val = (long) prop.GetValue(this);
-					if (val >= quantity)
-						prop.SetValue(this, val);
-					else
-						prop.SetValue(this, 0);
+					long val = (long)prop.GetValue(this);
+					long newVal = val - quantity;
+					prop.SetValue(this, newVal >= 0 ? newVal : 0);
 				}
 			}
 			return this;
@@ -177,9 +175,8 @@ namespace TBot.Ogame.Infrastructure.Models {
 
 		public bool HasAtLeast(Ships ships, long times = 1) {
 			foreach (PropertyInfo prop in this.GetType().GetProperties()) {
-				if ((long) prop.GetValue(this) * times < (long) prop.GetValue(ships)) {
+				if ((long) prop.GetValue(this) < (long) prop.GetValue(ships) *times)
 					return false;
-				}
 			}
 			return true;
 		}
@@ -193,6 +190,45 @@ namespace TBot.Ogame.Infrastructure.Models {
 			}
 			return output;
 		}
-	}
 
+		public Ships Merge(Ships other) {
+			Ships result = this;
+			foreach (PropertyInfo prop in other.GetType().GetProperties()) {
+                result.Add((Buildables)Enum.Parse(typeof(Buildables), prop.Name), (long)prop.GetValue(other));
+            }
+			return result;
+		}
+
+		public Ships unMerge(Ships other) {
+			Ships result = this;
+			foreach (PropertyInfo prop in other.GetType().GetProperties()) {
+				result.Remove((Buildables) Enum.Parse(typeof(Buildables), prop.Name), (int)(long) prop.GetValue(other));
+			}
+			return result;
+		}
+
+		public Ships Multiply(int quantity) {
+			Ships result = this;
+			foreach (PropertyInfo prop in this.GetType().GetProperties()) {
+				prop.SetValue(result, (long) Math.Ceiling((double)(long) prop.GetValue(result) *quantity));
+			}
+			return result;
+		}
+
+		public Ships Divide(int quantity) {
+			Ships result = this;
+			foreach (PropertyInfo prop in this.GetType().GetProperties()) {
+				prop.SetValue(result, (long) Math.Ceiling((double)(long) prop.GetValue(result) /quantity));
+			}
+			return result;
+		}
+		
+		public Ships Clone() {
+			Ships clone = new Ships();
+			foreach (PropertyInfo prop in this.GetType().GetProperties()) {
+				prop.SetValue(clone, prop.GetValue(this));
+			}
+			return clone;
+		}
+	}
 }
