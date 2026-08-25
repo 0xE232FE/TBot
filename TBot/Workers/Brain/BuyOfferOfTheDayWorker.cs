@@ -33,7 +33,7 @@ namespace Tbot.Workers.Brain {
 			} else if (sts == OfferOfTheDayStatus.OfferOfTheDayAlreadyBought){
 				_tbotInstance.log(LogLevel.Information, GetLogSender(), "Offer of the day already bought.");
 			} else {
-				_tbotInstance.log(LogLevel.Information, GetLogSender(), "Error buying Offer of the day. Already bought?");
+				_tbotInstance.log(LogLevel.Information, GetLogSender(), "Error buying Offer of the day (rate-limited or unavailable). Will retry later.");
 			}
 			
 			var time = await _tbotOgameBridge.GetDateTime();

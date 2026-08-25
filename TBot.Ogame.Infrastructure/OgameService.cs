@@ -815,11 +815,21 @@ namespace TBot.Ogame.Infrastructure {
 			OfferOfTheDayStatus sts = OfferOfTheDayStatus.OfferOfTheDayUnknown;
 			// 200 means it has been bought
 			// 400 {"Status":"error","Code":400,"Message":"Offer already accepted","Result":null}
+			// Other 400s (e.g. GF rate-limit) should stay Unknown, not AlreadyBought.
 			try {
 				await GetAsync<object>("/bot/buy-offer-of-the-day");
 				sts = OfferOfTheDayStatus.OfferOfTheDayBougth;
 			} catch (HttpRequestException e) when (e.StatusCode == HttpStatusCode.BadRequest) {
 				sts = OfferOfTheDayStatus.OfferOfTheDayAlreadyBought;
+			} catch (OgamedException e) {
+				var msg = e.Message ?? string.Empty;
+				if (msg.Contains("already", StringComparison.OrdinalIgnoreCase) ||
+					msg.Contains("bereits", StringComparison.OrdinalIgnoreCase) ||
+					msg.Contains("déjà", StringComparison.OrdinalIgnoreCase) ||
+					msg.Contains("deja", StringComparison.OrdinalIgnoreCase)) {
+					sts = OfferOfTheDayStatus.OfferOfTheDayAlreadyBought;
+				}
+				// else leave Unknown (rate-limit / try again / other GF errors)
 			} catch {
 				// Unknown!
 			}
