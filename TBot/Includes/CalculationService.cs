@@ -4716,7 +4716,11 @@ namespace Tbot.Includes {
 		}
 
 		public Fleet GetLastReturningEspionage(List<Fleet> fleets) {
-			var celestialEspionages = GetMissionsInProgress(Missions.Spy, fleets);
+			// Position 16 is deep space / expedition slot. Spy missions there are typically
+			// fleetsaves, not AutoFarm probes - exclude them so long returns do not block farming.
+			var celestialEspionages = GetMissionsInProgress(Missions.Spy, fleets)
+				.Where(f => f.Destination?.Position != 16 && f.Origin?.Position != 16)
+				.ToList();
 			if (celestialEspionages.Count > 0) {
 				return celestialEspionages
 					.OrderBy(fleet => fleet.BackIn).Last();

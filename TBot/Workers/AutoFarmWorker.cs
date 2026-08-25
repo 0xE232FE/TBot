@@ -751,8 +751,17 @@ namespace Tbot.Workers {
 					Fleet firstReturning = _calculationService.GetLastReturningEspionage(_tbotInstance.UserData.fleets);
 					if (firstReturning != null) {
 						int interval = (int) ((1000 * firstReturning.BackIn) + RandomizeHelper.CalcRandomInterval(IntervalType.AFewSeconds));
-						_tbotInstance.log(LogLevel.Information, LogSender.AutoFarm, $"Waiting {TimeSpan.FromMilliseconds(interval)} for all probes to return...");
-						await Task.Delay(interval, _ct);
+						if (interval < 0)
+							interval = 1000;
+						if (SettingsService.IsSettingSet(_tbotInstance.InstanceSettings.AutoFarm, "MaxWaitTime")
+							&& (int) _tbotInstance.InstanceSettings.AutoFarm.MaxWaitTime != 0
+							&& interval > (int) _tbotInstance.InstanceSettings.AutoFarm.MaxWaitTime * 1000) {
+							_tbotInstance.log(LogLevel.Information, LogSender.AutoFarm,
+								$"Probe return wait {TimeSpan.FromMilliseconds(interval)} exceeds MaxWaitTime {(int) _tbotInstance.InstanceSettings.AutoFarm.MaxWaitTime}s. Proceeding without waiting for all probes.");
+						} else {
+							_tbotInstance.log(LogLevel.Information, LogSender.AutoFarm, $"Waiting {TimeSpan.FromMilliseconds(interval)} for all probes to return...");
+							await Task.Delay(interval, _ct);
+						}
 					}
 
 					_tbotInstance.log(LogLevel.Information, LogSender.AutoFarm, "Processing espionage reports of found inactives...");
