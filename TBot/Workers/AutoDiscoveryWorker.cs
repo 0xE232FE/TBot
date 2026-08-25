@@ -347,6 +347,21 @@ namespace Tbot.Workers {
 					return;
 				}
 
+				bool hasPathfinder = false;
+				foreach (var origin in origins) {
+					if (origin == null) continue;
+					var ships = await _ogameService.GetShips(origin);
+					if (ships != null && ships.Pathfinder > 0) {
+						hasPathfinder = true;
+						break;
+					}
+				}
+				if (!hasPathfinder) {
+					DoLog(LogLevel.Information, "No Pathfinder on discovery origins; skipping send attempts until one is available.");
+					delay = true;
+					return;
+				}
+
 				var ctx = new DiscoveryRunContext {
 					FleetsToSend = fleetsToSend,
 					Stop = false,
