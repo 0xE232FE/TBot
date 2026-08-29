@@ -21,7 +21,7 @@
 			"Height": 1080,
 			"Timezone": "Europe/London",
 			"Lang": "en"
-		  }
+		}
 	},
 	"General": {
 		"Host": "localhost",
@@ -545,13 +545,19 @@
 		"Active": false,
 		"Origin": [
 			{
+				"Galaxy": 1,
+				"System": 234,
+				"Position": 5,
+				"Type": "Planet"
+			},
+			{
 				"Galaxy": 5,
 				"System": 64,
 				"Position": 8,
 				"Type": "Planet"
 			}
 		],
-		"MaxSlots": 5,
+		"MaxSlots": 15,
 		"MaxFailures": 5,
 		"RandomizeDestination": false,
 		"CheckIntervalMin": 30,

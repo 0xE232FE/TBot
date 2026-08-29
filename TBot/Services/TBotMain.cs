@@ -294,6 +294,7 @@ namespace Tbot.Services {
 			userData.researches = await _tbotOgameBridge.UpdateResearches();
 			userData.scheduledFleets = new();
 			userData.farmTargets = new();
+			userData.runningProfiles = new();
 
 			if (userData.celestials.Count == 1) {
 				await EditSettings(userData.celestials.First());
