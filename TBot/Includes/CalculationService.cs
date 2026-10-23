@@ -4758,7 +4758,7 @@ namespace Tbot.Includes {
 		}
 
 		public int CalcMaxExpeditions(Researches researches, CharacterClass playerClass, Staff staff) {
-			return CalcMaxExpeditions(researches.Astrophysics, playerClass == CharacterClass.Discoverer, staff.Geologist);
+			return CalcMaxExpeditions(researches.Astrophysics, playerClass == CharacterClass.Discoverer, staff.Admiral);
 		}
 		public int CalcMaxExpeditions(int astrophysics, bool isDiscoverer, bool hasAdmiral) {
 			int slots = (int) Math.Round(Math.Sqrt(astrophysics), 0, MidpointRounding.ToZero);

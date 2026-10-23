@@ -577,7 +577,7 @@ namespace Tbot.Services {
 		}
 		public async Task ListRunningProfiles() {
 			List<string> profiles = userData.runningProfiles;
-			if (profiles.Count <= 0 || profiles == null) {
+			if (profiles == null || profiles.Count <= 0) {
 				await SendTelegramMessage("No profile is currently running.");
 				return;
 			}

@@ -13,20 +13,22 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v7
       with:
         submodules: recursive
     - name: Setup Version ID
       run: |
         SNAP_VERSION=`git describe --tags --abbrev=0` || SNAP_VERSION="`git rev-parse --short HEAD`" ; echo "SNAP_VERSION=$SNAP_VERSION" >> $GITHUB_ENV
     - name: Setup .NET
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v6
       with:
-        dotnet-version: 9.0.x
+        global-json-file: global.json
     - name: Restore dependencies
       run: dotnet restore
+    - name: Run regression tests
+      run: dotnet test TBot.sln -c Release --no-restore
     - name: Setup GO
-      uses: actions/setup-go@v2
+      uses: actions/setup-go@v7
       with:
         go-version: '~1.23.0'
       
@@ -43,7 +45,7 @@ jobs:
       with:
         args: zip -qq -r TBot-${{ env.SNAP_VERSION }}-win64.zip publish/win64/
     - name: Upload win64
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: TBot-${{ env.SNAP_VERSION }}-win64
         path: ${{ github.workspace }}/TBot-${{ env.SNAP_VERSION }}-win64.zip
@@ -61,7 +63,7 @@ jobs:
       with:
         args: zip -qq -r TBot-${{ env.SNAP_VERSION }}-win32.zip publish/win32/
     - name: Upload win32
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: TBot-${{ env.SNAP_VERSION }}-win32
         path: ${{ github.workspace }}/TBot-${{ env.SNAP_VERSION }}-win32.zip
@@ -81,7 +83,7 @@ jobs:
       with:
         args: zip -qq -r TBot-${{ env.SNAP_VERSION }}-linux64.zip publish/linux64/
     - name: Upload linux64
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: TBot-${{ env.SNAP_VERSION }}-linux64
         path: ${{ github.workspace }}/TBot-${{ env.SNAP_VERSION }}-linux64.zip
@@ -101,7 +103,7 @@ jobs:
       with:
         args: zip -qq -r TBot-${{ env.SNAP_VERSION }}-linuxarm.zip publish/linuxarm/
     - name: Upload linuxarm
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: TBot-${{ env.SNAP_VERSION }}-linuxarm
         path: ${{ github.workspace }}/TBot-${{ env.SNAP_VERSION }}-linuxarm.zip
@@ -121,7 +123,7 @@ jobs:
       with:
         args: zip -qq -r TBot-${{ env.SNAP_VERSION }}-linuxarm64.zip publish/linuxarm64/
     - name: Upload linuxarm64
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: TBot-${{ env.SNAP_VERSION }}-linuxarm64
         path: ${{ github.workspace }}/TBot-${{ env.SNAP_VERSION }}-linuxarm64.zip
@@ -141,7 +143,7 @@ jobs:
       with:
         args: zip -qq -r TBot-${{ env.SNAP_VERSION }}-osx64.zip publish/osx64/
     - name: Upload osx64
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: TBot-${{ env.SNAP_VERSION }}-osx64
         path: ${{ github.workspace }}/TBot-${{ env.SNAP_VERSION }}-osx64.zip
@@ -161,7 +163,7 @@ jobs:
       with:
         args: zip -qq -r TBot-${{ env.SNAP_VERSION }}-osx-arm64.zip publish/osx-arm64/
     - name: Upload osx-arm64
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: TBot-${{ env.SNAP_VERSION }}-osx-arm64
         path: ${{ github.workspace }}/TBot-${{ env.SNAP_VERSION }}-osx-arm64.zip
